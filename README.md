@@ -57,6 +57,8 @@ A proper admin hub rather than a bare form - separate cards for managing events,
 ### QR check-in scanner
 A camera-based scanner for venue entry. Scanning a valid ticket shows a full-page confirmation with seat/ticket details; scanning an already-used or cancelled ticket is rejected outright. Start/stop controls release the camera when not in use.
 
+![QR Scanner](Screenshots/qr-scanner.jpeg)
+
 ### Analytics dashboard
 Revenue by event, occupancy percentage and a 14-day booking trend, all computed live from Firestore rather than cached.
 
