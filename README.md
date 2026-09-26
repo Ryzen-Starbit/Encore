@@ -73,37 +73,51 @@ A dark, marquee-theater design - chase-light borders, ticket-stub cards with pun
 
 ---
 
-## Architecture
+## 🏗️ Architecture
 
-Browser (React + Vite)
-│
-▼
-Vite Dev Server (5173)
-│
-├── /api/* ──────────────────────► Node + Express API (5000)
-│ │
-│ ├── /api/events (browse, admin CRUD)
-│ ├── /api/holds (seat/slot locking, transactions)
-│ ├── /api/payments (Razorpay order + signature verify)
-│ ├── /api/bookings (mine, cancel, check-in)
-│ ├── /api/waitlist (join, auto-notify)
-│ └── /api/analytics (revenue, occupancy, trends)
-│ │
-│ Firebase Admin SDK
-│ │
-│ ┌─────────────────┼─────────────────┐
-│ ▼ ▼ ▼
-│ Firestore Razorpay API Gmail SMTP
-│ (events, holds, (orders, refund, (Nodemailer:
-│ bookings, waitlists) signature verify) confirmations,
-│ cancellations,
-├── Firebase Auth ──────► Email / Google sign-in reminders)
-│ + custom admin claim
-│
-└── node-cron ─────────► expireHolds (every 1 min)
-sendReminders (every 5 min)
-
-
+```text
+┌───────────────────────────────┐
+│        Browser / Client       │
+│       React + Vite            │
+└───────────────┬───────────────┘
+                │
+                │ HTTP / API
+                ▼
+┌───────────────────────────────┐
+│       Vite Dev Server         │
+│           :5173               │
+└───────────────┬───────────────┘
+                │
+                ▼
+┌─────────────────────────────────────────┐
+│          Node.js + Express API          │
+│                 :5000                   │
+├─────────────────────────────────────────┤
+│                                         │
+│  /api/events       Event CRUD           │
+│  /api/holds        Seat/slot locking    │
+│  /api/payments     Razorpay payments    │
+│  /api/bookings     Booking management   │
+│  /api/waitlist     Waitlist management  │
+│  /api/analytics    Revenue & occupancy  │
+│                                         │
+└───────┬──────────────┬──────────────┬───┘
+        │              │              │
+        ▼              ▼              ▼
+┌─────────────┐ ┌─────────────┐ ┌─────────────┐
+│  Firebase   │ │  Razorpay   │ │   Gmail     │
+│  Firestore  │ │   Payments  │ │    SMTP     │
+│  Auth       │ │             │ │             │
+└─────────────┘ └─────────────┘ └─────────────┘
+        │
+        ▼
+┌─────────────────────────────────────────┐
+│          Background Jobs                │
+│                                         │
+│  expireHolds.js     → Every 1 minute    │
+│  sendReminders.js   → Every 5 minutes   │
+└─────────────────────────────────────────┘
+```
 ---
 
 ## Tech stack
@@ -206,38 +220,92 @@ Open `http://localhost:5173`.
 
 ---
 
-## Project structure
+## 🔗 Project Structure
 
+```text
 booking-app/
 ├── client/
-│ └── src/
-│ ├── components/
-│ │ ├── Navbar/, EventCard.jsx, TicketModal.jsx, TicketLookup.jsx
-│ │ ├── SeatMap/, SlotSelector/, Countdown/
-│ │ ├── Loader.jsx, SkeletonCard.jsx, SkeletonTicketRow.jsx
-│ │ ├── FloatingDecor.jsx, CurtainTransition.jsx
-│ │ ├── ProtectedRoute.jsx, AdminRoute.jsx
-│ ├── pages/
-│ │ ├── Home.jsx, Login.jsx, Profile.jsx, EventDetails.jsx
-│ │ └── admin/ (AdminHome, ManageEvents, ScannerPage, AdminAnalytics)
-│ ├── context/AuthContext.jsx
-│ ├── services/ (firebase.js, api.js)
-│ └── data/indianCities.js
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── Navbar/
+│   │   │   ├── EventCard.jsx
+│   │   │   ├── TicketModal.jsx
+│   │   │   ├── TicketLookup.jsx
+│   │   │   ├── SeatMap/
+│   │   │   ├── SlotSelector/
+│   │   │   ├── Countdown/
+│   │   │   ├── Loader.jsx
+│   │   │   ├── SkeletonCard.jsx
+│   │   │   ├── SkeletonTicketRow.jsx
+│   │   │   ├── FloatingDecor.jsx
+│   │   │   └── CurtainTransition.jsx
+│   │   │
+│   │   ├── pages/
+│   │   │   ├── Home.jsx
+│   │   │   ├── Login.jsx
+│   │   │   ├── Profile.jsx
+│   │   │   ├── EventDetails.jsx
+│   │   │   └── admin/
+│   │   │       ├── AdminHome.jsx
+│   │   │       ├── ManageEvents.jsx
+│   │   │       ├── ScannerPage.jsx
+│   │   │       └── AdminAnalytics.jsx
+│   │   │
+│   │   ├── context/
+│   │   │   └── AuthContext.jsx
+│   │   │
+│   │   ├── services/
+│   │   │   ├── firebase.js
+│   │   │   └── api.js
+│   │   │
+│   │   └── data/
+│   │       └── indianCities.js
+│   │
+│   └── ...
 │
 ├── server/
-│ ├── config/ (firebaseAdmin.js, razorpay.js)
-│ ├── middleware/ (authMiddleware, adminMiddleware, validateEvent)
-│ ├── routes/ (events, holds, payments, bookings, analytics, waitlist)
-│ ├── services/ (seatLockService, slotLockService, bookingService,
-│ │ cancellationService, waitlistService, emailService,
-│ │ paymentService, ticketService)
-│ ├── jobs/ (expireHolds.js, sendReminders.js)
-│ ├── utils/pricing.js
-│ └── scripts/setAdmin.js
+│   ├── config/
+│   │   ├── firebaseAdmin.js
+│   │   └── razorpay.js
+│   │
+│   ├── middleware/
+│   │   ├── authMiddleware.js
+│   │   └── validateEvent.js
+│   │
+│   ├── routes/
+│   │   ├── events.js
+│   │   ├── holds.js
+│   │   ├── payments.js
+│   │   ├── bookings.js
+│   │   ├── analytics.js
+│   │   └── waitlist.js
+│   │
+│   ├── services/
+│   │   ├── seatLockService.js
+│   │   ├── slotLockService.js
+│   │   ├── bookingService.js
+│   │   ├── cancellationService.js
+│   │   ├── waitlistService.js
+│   │   ├── emailService.js
+│   │   ├── paymentService.js
+│   │   └── ticketService.js
+│   │
+│   ├── jobs/
+│   │   ├── expireHolds.js
+│   │   └── sendReminders.js
+│   │
+│   ├── utils/
+│   │   └── pricing.js
+│   │
+│   ├── scripts/
+│   │   └── setAdmin.js
+│   │
+│   └── firebase/
+│       └── firestore.rules
 │
-└── firebase/firestore.rules
-
-
+├── package.json
+└── README.md
+```
 ---
 
 ## Known limitations / things I'd improve
