@@ -104,11 +104,11 @@ A dark, marquee-theater design - chase-light borders, ticket-stub cards with pun
 └───────┬──────────────┬──────────────┬───┘
         │              │              │
         ▼              ▼              ▼
-┌─────────────┐ ┌─────────────┐ ┌─────────────┐
-│  Firebase   │ │  Razorpay   │ │   Gmail     │
-│  Firestore  │ │   Payments  │ │    SMTP     │
-│  Auth       │ │             │ │             │
-└─────────────┘ └─────────────┘ └─────────────┘
+┌─────────────────┐ ┌─────────────┐ ┌─────────────┐      
+│  Firebase       │ │  Razorpay   │ │   Gmail     │
+│  Authentication │ │   Payments  │ │    SMTP     │
+│  Firestore      │ │             | │             |
+└─────────────────┘ └─────────────┘ └─────────────┘
         │
         ▼
 ┌─────────────────────────────────────────┐
@@ -147,7 +147,7 @@ A dark, marquee-theater design - chase-light borders, ticket-stub cards with pun
 ### 1. Clone it
 
 ```bash
-git clone https://github.com/<Ryzen-Starbit>/encore.git
+git clone https://github.com/Ryzen-Starbit/Encore
 cd encore
 ```
 
@@ -174,6 +174,7 @@ cd encore
 
 `client/.env`:
 
+```env
 VITE_FIREBASE_API_KEY=
 VITE_FIREBASE_AUTH_DOMAIN=
 VITE_FIREBASE_PROJECT_ID=
@@ -181,18 +182,19 @@ VITE_FIREBASE_STORAGE_BUCKET=
 VITE_FIREBASE_MESSAGING_SENDER_ID=
 VITE_FIREBASE_APP_ID=
 VITE_API_URL=http://localhost:5000/api
-
+```
 
 `server/.env`:
 
+```env
 PORT=5000
 CLIENT_URL=http://localhost:5173
 RAZORPAY_KEY_ID=
 RAZORPAY_KEY_SECRET=
 EMAIL_USER=
 EMAIL_PASS=
-EMAIL_FROM="Encore youraddress@gmail.com"
-
+EMAIL_FROM=
+```
 
 ### 6. Install and run
 
@@ -223,7 +225,7 @@ Open `http://localhost:5173`.
 ## 🔗 Project Structure
 
 ```text
-booking-app/
+Encore/
 ├── client/
 │   ├── src/
 │   │   ├── components/
