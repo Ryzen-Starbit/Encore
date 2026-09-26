@@ -1,8 +1,8 @@
-# Encore — Event & Fair Ticketing Platform
+# Encore - Event & Fair Ticketing Platform
 
 I wanted a portfolio project that went beyond another movie-ticket clone, so I built Encore around comedy shows, poetry nights, music gigs, and book/anime fairs instead — which meant solving two different booking problems in one app: reserved-seat concurrency for shows, and limited-quantity inventory for fairs. Everything is built to survive real concurrent demand, not just look right in a single-user demo.
 
-![Home page — marquee hero and event grid](screenshots/home.png)
+![Home page - marquee hero and event grid](Screenshots/home.png)
 
 ---
 
@@ -25,49 +25,49 @@ Encore is built specifically to close these gaps with Firestore transactions, HM
 ### Browsing & discovery
 Events are split into two types — **Shows** (comedy, poetry, music, with reserved seating) and **Fares** (book/anime fairs, with limited-quantity time slots). The Explore page has category filters and a fuzzy search bar across event title, city, and venue, and automatically hides events once they've passed.
 
-![Explore page with category filters and search](screenshots/explore-search.png)
+![Explore page with category filters and search](Screenshots/explore-search.png)
 
 ### Concurrency-safe seat & slot holds
-This is the part I spent the most time on. Selecting seats or fare tickets creates a Firestore **transaction**-backed hold with an 8-minute countdown before payment must complete. Two users racing for the same seat, or the last ticket in a sold-out slot, can't both succeed — I tested this directly with two simultaneous browser sessions, and only one hold ever goes through, with the other getting a clean rejection instead of silently overwriting the first.
+This is the part I spent the most time on. Selecting seats or fare tickets creates a Firestore **transaction**-backed hold with an 8-minute countdown before payment must complete. Two users racing for the same seat, or the last ticket in a sold-out slot, can't both succeed - I tested this directly with two simultaneous browser sessions, and only one hold ever goes through, with the other getting a clean rejection instead of silently overwriting the first.
 
-![Seat map with live occupancy bar](screenshots/seat-map.png)
+![Seat map with live occupancy bar](Screenshots/seat-map.png)
 
 Fare slots use dynamic demand pricing — price rises up to 50% as a slot fills, computed server-side so it can't be tampered with from the client.
 
-![Slot selector with surge pricing](screenshots/slot-selector.png)
+![Slot selector with surge pricing](Screenshots/slot-selector.png)
 
 ### Payments & tickets
-Checkout runs through Razorpay. The backend independently recomputes and verifies the payment signature before ever creating a booking — the frontend's "payment succeeded" callback is never trusted on its own. Every confirmed booking gets a QR-code e-ticket, viewable in an expandable ticket modal with download-as-image and native share support.
+Checkout runs through Razorpay. The backend independently recomputes and verifies the payment signature before ever creating a booking - the frontend's "payment succeeded" callback is never trusted on its own. Every confirmed booking gets a QR-code e-ticket, viewable in an expandable ticket modal with download-as-image and native share support.
 
-![Ticket modal with QR code, download, and share](screenshots/ticket-modal.png)
-![Test Mode Razorpay Gateway](screenshots/payment.png)
+![Ticket modal with QR code, download and share](Screenshots/ticket-modal.png)
+![Test Mode Razorpay Gateway](Screenshots/payment.png)
 
 ### My Bookings
-Bookings are split into Active, Expired, and Cancelled tabs, with expired tickets automatically archived after 30 days (with a "view older" toggle to see the full history). Cancelling within the allowed window triggers a real Razorpay refund and frees the seat/slot back up for other users — including notifying anyone on the waitlist for that show or slot.
+Bookings are split into Active, Expired and Cancelled tabs, with expired tickets automatically archived after 30 days (with a "view older" toggle to see the full history). Cancelling within the allowed window triggers a real Razorpay refund and frees the seat/slot back up for other users - including notifying anyone on the waitlist for that show or slot.
 
-![My Bookings with status tabs](screenshots/my-bookings.png)
+![My Bookings with status tabs](Screenshots/my-bookings.png)
 
 ### Admin panel
-A proper admin hub rather than a bare form — separate cards for managing events, running the check-in scanner, and viewing analytics. Event creation cascades State → City dropdowns across every Indian state, and editing/deleting locks automatically once an event is within 24 hours of starting.
+A proper admin hub rather than a bare form - separate cards for managing events, running the check-in scanner and viewing analytics. Event creation cascades State → City dropdowns across every Indian state and editing/deleting locks automatically once an event is within 24 hours of starting.
 
-![Admin hub](screenshots/admin-hub.png)
-![Manage Events form](screenshots/manage-events1.png)
-![Manage Events form](screenshots/manage-events2.png)
+![Admin hub](Screenshots/admin-hub.png)
+![Manage Events form](Screenshots/manage-events1.png)
+![Manage Events form](Screenshots/manage-events2.png)
 
 ### QR check-in scanner
 A camera-based scanner for venue entry. Scanning a valid ticket shows a full-page confirmation with seat/ticket details; scanning an already-used or cancelled ticket is rejected outright. Start/stop controls release the camera when not in use.
 
 ### Analytics dashboard
-Revenue by event, occupancy percentage, and a 14-day booking trend, all computed live from Firestore rather than cached.
+Revenue by event, occupancy percentage and a 14-day booking trend, all computed live from Firestore rather than cached.
 
-![Analytics dashboard](screenshots/analytics1.png)
-![Analytics dashboard](screenshots/analytics2.png)
+![Analytics dashboard](Screenshots/analytics1.png)
+![Analytics dashboard](Screenshots/analytics2.png)
 
 ### Notifications
-Email confirmations and cancellation notices via Gmail SMTP, plus an automatic reminder email 2 hours before an event starts — all handled by background cron jobs that also expire stale holds every minute.
+Email confirmations and cancellation notices via Gmail SMTP, plus an automatic reminder email 2 hours before an event starts - all handled by background cron jobs that also expire stale holds every minute.
 
 ### Visual identity
-A dark, marquee-theater design — chase-light borders, ticket-stub cards with punch-hole perforations, curtain-wipe page transitions, and a slow drift of translucent film-reel/ticket icons across the background.
+A dark, marquee-theater design - chase-light borders, ticket-stub cards with punch-hole perforations, curtain-wipe page transitions and a slow drift of translucent film-reel/ticket icons across the background.
 
 ---
 
@@ -131,7 +131,7 @@ sendReminders (every 5 min)
 ### 1. Clone it
 
 ```bash
-git clone https://github.com/<your-username>/encore.git
+git clone https://github.com/<Ryzen-Starbit>/encore.git
 cd encore
 ```
 
@@ -141,7 +141,7 @@ cd encore
 2. Enable **Authentication** → Email/Password + Google
 3. Enable **Firestore Database** (test mode is fine locally)
 4. Project Settings → General → add a Web app → copy the config
-5. Project Settings → Service Accounts → Generate new private key → save as `server/serviceAccountKey.json` (already gitignored)
+5. Project Settings → Service Accounts → Generate new private key → save as `server/serviceAccountKey.json` 
 
 ### 3. Set up Razorpay
 
