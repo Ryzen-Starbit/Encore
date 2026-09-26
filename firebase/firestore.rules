@@ -1,0 +1,22 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Events are publicly readable, writes go through the Express backend
+    // (using the Admin SDK, which bypasses these rules) rather than
+    // directly from the client, so we keep client-side writes locked down.
+    match /events/{eventId} {
+      allow read: if true;
+      allow write: if false;
+    }
+    // Holds and bookings are managed exclusively by the backend via
+    // Firestore transactions - never written to directly by clients.
+    match /holds/{holdId} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+    match /bookings/{bookingId} {
+      allow read: if request.auth != null && request.auth.uid == resource.data.userId;
+      allow write: if false;
+    }
+  }
+}

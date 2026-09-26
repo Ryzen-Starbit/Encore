@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body { @apply bg-canvas text-ink font-body; }
+h1, h2, h3 { @apply font-display; }
+input, textarea, select {
+  @apply bg-surface text-ink border border-white/10 rounded-lg px-4 py-2 text-sm;
+}
+input::placeholder, textarea::placeholder { color: rgba(245, 241, 234, 0.35); }
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(242, 183, 5, 0.4);
+}
+.marquee-border {
+  background-image: repeating-linear-gradient(90deg, theme('colors.marquee') 0 10px, transparent 10px 20px);
+  background-size: 40px 3px;
+}
+.ticket-stub { position: relative; }
+.ticket-stub::before, .ticket-stub::after {
+  content: '';
+  position: absolute;
+  left: 28%;
+  width: 16px;
+  height: 16px;
+  background: theme('colors.canvas');
+  border-radius: 999px;
+  transform: translateX(-50%);
+}
+.ticket-stub::before { top: -8px; }
+.ticket-stub::after { bottom: -8px; }
+.ticket-perforation { border-left: 2px dashed theme('colors.ink' / 15%); }
+.ticket-tilt { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+.ticket-tilt:hover {
+  transform: rotate(-1deg) translateY(-4px);
+  box-shadow: 0 0 0 1px rgba(242,183,5,0.3), 0 20px 40px -12px rgba(242,183,5,0.3);
+}
+.glow-hover { transition: box-shadow 0.25s ease, transform 0.25s ease; }
+.glow-hover:hover {
+  box-shadow: 0 0 24px -4px rgba(242,183,5,0.45);
+  transform: translateY(-2px);
+}
+@keyframes floatDecor {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-24px); }
+}
+@keyframes shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.1) 37%, rgba(255,255,255,0.04) 63%);
+  background-size: 800px 100%;
+  animation: shimmer 1.4s linear infinite;
+}
